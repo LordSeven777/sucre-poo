@@ -27,15 +27,15 @@ class Banque {
 
 interface ICompte {
   transaction(compte: Compte): void;
-  depot(): void;
-  retrait(): void;
+  depot(montant: number): void;
+  retrait(montant: number): void;
   getSolde(): void;
   pret(): void;
 }
 
 type TypeCompte = "Mobile" | "Epargne" | "Principale";
 
-class Compte {
+abstract class Compte implements ICompte {
   public client!: Client;
   public type!: TypeCompte;
   private solde!: number;
@@ -61,16 +61,13 @@ class Compte {
   public getSolde() {
     return this.solde;
   }
+
+  abstract pret(): void;
+  abstract transaction(compte: Compte): void;
 }
 
-class CompteMobile extends Compte implements ICompte {
+class CompteMobile extends Compte {
   transaction(): void {
-    throw new Error("Method not implemented.");
-  }
-  depot(): void {
-    throw new Error("Method not implemented.");
-  }
-  retrait(): void {
     throw new Error("Method not implemented.");
   }
   pret(): void {
@@ -78,14 +75,8 @@ class CompteMobile extends Compte implements ICompte {
   }
 }
 
-class CompteEpargne extends Compte implements ICompte {
+class CompteEpargne extends Compte {
   transaction(): void {
-    throw new Error("Method not implemented.");
-  }
-  depot(): void {
-    throw new Error("Method not implemented.");
-  }
-  retrait(): void {
     throw new Error("Method not implemented.");
   }
   pret(): void {
@@ -93,14 +84,8 @@ class CompteEpargne extends Compte implements ICompte {
   }
 }
 
-class ComptePrincipale extends Compte implements ICompte {
+class ComptePrincipale extends Compte {
   transaction(): void {
-    throw new Error("Method not implemented.");
-  }
-  depot(): void {
-    throw new Error("Method not implemented.");
-  }
-  retrait(): void {
     throw new Error("Method not implemented.");
   }
   pret(): void {
