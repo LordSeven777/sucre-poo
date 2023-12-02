@@ -32,8 +32,28 @@ class Banque {
     this.clients.push(client);
   }
 
+  public addCompte(type: TypeCompte, client: Client) {
+    let compte: Compte;
+    switch (type) {
+      case "Mobile":
+        compte = new CompteMobile(type, client);
+        break;
+      case "Epargne":
+        compte = new CompteEpargne(type, client);
+        break;
+      case "Principale":
+        compte = new ComptePrincipale(type, client);
+        break;
+    }
+    banque.comptes.push(compte);
+  }
+
   public getClientById(id: number) {
     return this.clients.find((client) => client.id === id);
+  }
+
+  public getComptesByClient(idClient: number) {
+    return this.comptes.find((compte) => compte.client.id === idClient);
   }
 
   public getCompteByClient(idClient: number, type: TypeCompte) {
@@ -56,13 +76,12 @@ type TypeCompte = "Mobile" | "Epargne" | "Principale";
 abstract class Compte implements ICompte {
   public client!: Client;
   public type!: TypeCompte;
-  private solde!: number;
+  private solde: number = 0;
   private tauxRetrait = 6;
 
-  constructor(client: Client, type: TypeCompte, solde: number) {
+  constructor(type: TypeCompte, client: Client) {
     this.client = client;
     this.type = type;
-    this.solde = solde;
   }
 
   public depot(montant: number) {
@@ -85,6 +104,10 @@ abstract class Compte implements ICompte {
 }
 
 class CompteMobile extends Compte {
+  constructor(type: TypeCompte, client: Client) {
+    super(type, client);
+  }
+
   transaction(): void {
     throw new Error("Method not implemented.");
   }
@@ -94,6 +117,10 @@ class CompteMobile extends Compte {
 }
 
 class CompteEpargne extends Compte {
+  constructor(type: TypeCompte, client: Client) {
+    super(type, client);
+  }
+
   transaction(): void {
     throw new Error("Method not implemented.");
   }
@@ -103,6 +130,10 @@ class CompteEpargne extends Compte {
 }
 
 class ComptePrincipale extends Compte {
+  constructor(type: TypeCompte, client: Client) {
+    super(type, client);
+  }
+
   transaction(): void {
     throw new Error("Method not implemented.");
   }
@@ -120,9 +151,11 @@ function main() {
         2- Déjà membre
         `);
     let choix = prompt("Choix: ");
+    console.clear();
     switch (choix) {
       case "1":
         creationCompte();
+        isEnd = true;
         break;
       case "2":
         choixCompte();
@@ -137,12 +170,32 @@ const banque = new Banque();
 let clientsId = 0;
 
 function creationCompte() {
+  console.log("Informations personnelles:");
   const nom = prompt("nom: ");
   const prenom = prompt("prenom: ");
   const tel = prompt("telephone: ");
   const adresse = prompt("adresse: ");
   const client = new Client(++clientsId, nom, prenom, tel, adresse);
   banque.addClient(client);
+  console.log(
+    `Choisir un type de compte:\n1- Mobile\n2- Epargne\n3- Principale`
+  );
+  let choix = prompt("Choix: ");
+  let typeCompte: TypeCompte = "Mobile";
+  switch (choix) {
+    case "1":
+      typeCompte = "Mobile";
+      break;
+    case "2":
+      typeCompte = "Epargne";
+      break;
+    case "3":
+      typeCompte = "Principale";
+      break;
+  }
+  banque.addCompte(typeCompte, client);
 }
 
 function choixCompte() {}
+
+main();
