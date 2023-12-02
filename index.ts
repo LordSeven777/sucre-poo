@@ -1,14 +1,32 @@
+import promptLib from "prompt-sync";
+
+const prompt = promptLib({ sigint: true });
+
 class Client {
   id!: number;
   nom!: string;
   prenom!: string;
   tel!: string;
   adresse!: string;
+
+  constructor(
+    id: number,
+    nom: string,
+    prenom: string,
+    tel: string,
+    adresse: string
+  ) {
+    this.id = id;
+    this.nom = nom;
+    this.prenom = prenom;
+    this.tel = tel;
+    this.adresse = adresse;
+  }
 }
 
 class Banque {
-  private clients!: Client[];
-  private comptes!: Compte[];
+  private clients: Client[] = [];
+  private comptes: Compte[] = [];
 
   public addClient(client: Client) {
     this.clients.push(client);
@@ -92,3 +110,39 @@ class ComptePrincipale extends Compte {
     throw new Error("Method not implemented.");
   }
 }
+
+function main() {
+  let isEnd = false;
+  while (!isEnd) {
+    console.log(`
+        Menu principal:\n
+        1- Devenir membre\n
+        2- Déjà membre
+        `);
+    let choix = prompt("Choix: ");
+    switch (choix) {
+      case "1":
+        creationCompte();
+        break;
+      case "2":
+        choixCompte();
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+const banque = new Banque();
+let clientsId = 0;
+
+function creationCompte() {
+  const nom = prompt("nom: ");
+  const prenom = prompt("prenom: ");
+  const tel = prompt("telephone: ");
+  const adresse = prompt("adresse: ");
+  const client = new Client(++clientsId, nom, prenom, tel, adresse);
+  banque.addClient(client);
+}
+
+function choixCompte() {}
