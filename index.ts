@@ -44,6 +44,7 @@ class Compte {
   constructor(client: Client, type: TypeCompte, solde: number) {
     this.client = client;
     this.type = type;
+    this.solde = solde;
   }
 
   public depot(montant: number) {
